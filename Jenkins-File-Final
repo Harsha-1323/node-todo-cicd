@@ -6,6 +6,7 @@ pipeline {
             steps {
                 git url: 'https://github.com/Harsha-1323/node-todo-cicd.git', branch: 'master'
                 echo "The code has been cloned"
+                echo "Well Done Harsha"
             }
         }
 
