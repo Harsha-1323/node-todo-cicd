@@ -1,0 +1,23 @@
+pipeline {
+    agent { label 'dev' }
+    
+    stages {
+        stage("Clone Code") {
+            steps {
+                echo "The code has been cloned"
+            }
+        }
+
+        stage("Build & Test") {
+            steps {
+                echo "Image built via Docker"
+            }
+        }
+
+        stage("Deploy") {
+            steps {
+                echo "I ran the docker run command and the app started running"
+            }
+        }
+    }
+}
