@@ -1,0 +1,43 @@
+pipeline {
+    agent { label 'devs' }
+
+    stages {
+        stage("Clone Code") {
+            steps {
+                git url: 'https://github.com/Harsha-1323/node-todo-cicd.git', branch: 'master'
+                echo "The code has been cloned"
+            }
+        }
+
+        stage("Build & Test") {
+            steps {
+                sh 'docker build -t node-todo:latest .'
+                echo "Image built via Docker"
+            }
+        }
+
+        stage("Push to DockerHUB") {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockercreds',
+                    usernameVariable: 'dockerHubUser',
+                    passwordVariable: 'dockerHubPass'
+                )]) {
+                    sh '''
+                        echo "$dockerHubPass" | docker login -u "$dockerHubUser" --password-stdin
+                        docker tag node-todo:latest $dockerHubUser/node-todo:latest
+                        docker push $dockerHubUser/node-todo:latest
+                    '''
+                    echo "Image pushed to Docker Hub"
+                }
+            }
+        }
+
+        stage("Deploy") {
+            steps {
+                sh 'docker-compose up -d'
+                echo "App is running via docker-compose"
+            }
+        }
+    }
+}
